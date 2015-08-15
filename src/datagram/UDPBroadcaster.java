@@ -1,6 +1,7 @@
 package datagram;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -28,12 +29,13 @@ public class UDPBroadcaster implements Runnable {
 	}
 
 	public void run() {
-		try {
+		try { 
 			bPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 8888);
 			bSocket.send(bPacket);
 			System.out.println(getClass().getName() + ">>>sent packet to 255.255.255.255(DEFAULT)");
 
 			bPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("192.168.1.255"), 8888);
+			bSocket.send(bPacket);
 			System.out.println(getClass().getName() + ">>>sent packet to 192.168.1.255(DEFAULT)");
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()) {
@@ -50,6 +52,12 @@ public class UDPBroadcaster implements Runnable {
 					bPacket = new DatagramPacket(sendData, sendData.length, broadcast, 8888);
 					// System.out.println("TEST: Check Data: "+new
 					// String(bPacket.getData()));
+					try{
+						bSocket.send(bPacket);
+					}catch(BindException e){
+						System.out.println("Could not send on interface: "+networkInterface.getDisplayName());
+						continue;
+					}
 					System.out.println(getClass().getName() + ">>>sent packet to " + broadcast.getHostAddress());
 				}
 			}
