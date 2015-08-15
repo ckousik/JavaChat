@@ -25,14 +25,16 @@ public class UDPBroadcastReciever implements Runnable {
 
 	public void run() {
 		try {
-			recvBuffer = new byte[4132];
-			rSocket.receive(rPacket);
-			recvBuffer = rPacket.getData();
-			System.out
+			while(true){
+				recvBuffer = new byte[4132];
+				rSocket.receive(rPacket);
+				recvBuffer = rPacket.getData();
+				System.out
 					.println(getClass().getName() + ">>>Recieved packet from " + rPacket.getAddress().getHostAddress());
-			Message m = Message.deserialize(recvBuffer);
-			System.out
-			.println("Data: "+m.toString());
+				Message m = Message.deserialize(recvBuffer);
+				System.out
+				.println("Data: "+m.toString());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e){

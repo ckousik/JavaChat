@@ -36,6 +36,9 @@ public class UDPBroadcaster implements Runnable {
 
 			bPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("192.168.1.255"), 8888);
 			bSocket.send(bPacket);
+			/*
+			bPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("0.0.0.0"), 8888);
+			bSocket.send(bPacket);*/
 			System.out.println(getClass().getName() + ">>>sent packet to 192.168.1.255(DEFAULT)");
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()) {
@@ -55,7 +58,8 @@ public class UDPBroadcaster implements Runnable {
 					try{
 						bSocket.send(bPacket);
 					}catch(BindException e){
-						System.out.println("Could not send on interface: "+networkInterface.getDisplayName());
+						System.out.println("Could not send on interface: "+networkInterface.getDisplayName()+
+								" "+broadcast.getHostAddress());
 						continue;
 					}
 					System.out.println(getClass().getName() + ">>>sent packet to " + broadcast.getHostAddress());
